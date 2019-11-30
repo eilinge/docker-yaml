@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  sonarqube:
+    image: kennyallen/sonarqube:7.2.1
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - ${SONARQUBE_HOME}:/opt/sonarqube/data
+    environments:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://localhost/sonar

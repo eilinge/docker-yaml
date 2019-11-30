@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce
+    restart: always
+    ports:
+      - 443:443
+      - 80:80
+      - 22:22
+    volumes:
+      - ${GITLAB_HOME}/conf:/etc/gitlab
+      - ${GITLAB_HOME}:/var/opt/gitlab
+      - ${GITLAB_HOME}/log:/var/log/gitlab
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    volumes:
+      - /home/jenkins_01:/home/jenkins_01
+    ports:
+      - 8081:8080
