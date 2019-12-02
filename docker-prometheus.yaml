@@ -3,8 +3,8 @@ version: "3"
 services:
   exporter:
     image: prom/node-exporter
-    networks:
-      - "host"
+    #networks:
+      #- "host"
     ports:
       - 9100:9100
     volumes:
