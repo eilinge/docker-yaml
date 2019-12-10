@@ -1,0 +1,35 @@
+set channel-info:7377309771234304 "{\"updateDate\":1575272167000,\"corpid\":\"100007\",\"passpwd\":\"123\",\"routeChannel\":\"0\",\"channelType\":1,\"gatewayIp\":\"192.168.1.198\",\"wordsMaxlen\":500,\"speed\":1000,\"network\":1,\"updater\":\"admin\",\"mobileShieldArea\":\"\",\"number\":\"100002\",\"sendRate\":1000,\"wordsLen\":70,\"balance\":\"0\",\"provider\":\"paas\",\"price\":10.0,\"gatewayNomber\":\"100002\",\"gatewayServiceId\":\"help\",\"id\":\"7377309771234304\",\"routeType\":0,\"channelProvider\":\"paas\",\"channelId\":\"7377309771234307\",\"createDate\":1574414203000,\"area\":\"\",\"isProvince\":0,\"creator\":\"gotest\",\"localPort\":0,\"recordType\":0,\"channelIp\":\"192.168.1.198\",\"expidLen\":12,\"localExpidLen\":12,\"gatewayPort\":7777,\"telecomShieldArea\":\"\",\"channelPort\":7777,\"shieldArea\":\"\",\"unicomShieldArea\":\"\",\"msgformat\":8,\"tenantId\":\"102019081399792\",\"channelName\":\"100002\",\"serviceid\":\"help\",\"account\":\"100002\",\"status\":4,\"windowstats\":true}"
+
+set channel-info:7645731233987584 "{\"updateDate\":1575439930000,\"corpid\":\"100009\",\"passpwd\":\"123\",\"routeChannel\":\"0\",\"channelType\":1,\"gatewayIp\":\"192.168.1.198\",\"wordsMaxlen\":500,\"speed\":1000,\"network\":1,\"updater\":\"admin\",\"mobileShieldArea\":\"\",\"number\":\"100009\",\"sendRate\":1000,\"wordsLen\":70,\"balance\":\"0\",\"provider\":\"\xe6\xa8\xa1\xe6\x8b\x9f\xe9\x80\x9a\xe9\x81\x93\",\"price\":10.0,\"gatewayNomber\":\"100009\",\"gatewayServiceId\":\"help\",\"id\":\"7645731233987584\",\"routeType\":0,\"channelProvider\":\"\xe6\xa8\xa1\xe6\x8b\x9f\xe9\x80\x9a\xe9\x81\x93\",\"channelId\":\"7645731233987584\",\"createDate\":1575438150000,\"area\":\"\",\"isProvince\":0,\"creator\":\"xyweim\",\"comments\":\"\xe6\xa8\xa1\xe6\x8b\x9f\xe9\x80\x9a\xe9\x81\x93\",\"localPort\":0,\"recordType\":0,\"channelIp\":\"192.168.1.198\",\"expidLen\":12,\"localExpidLen\":12,\"gatewayPort\":7777,\"telecomShieldArea\":\"\",\"channelPort\":7777,\"shieldArea\":\"\",\"unicomShieldArea\":\"\",\"msgformat\":8,\"tenantId\":\"102019120480753\",\"channelName\":\"100009\",\"serviceid\":\"help\",\"account\":\"100009\",\"status\":4,\"windowstats\":false}"
+
+{"account":"100009","channel":"7645731233987584","channelIp":"192.168.1.198","channelName":"100009","channelPort":7777,"cmppVersion":32,"corpId":"100009","error":"connect response status: auth failed","file":"cmpp_client.go:288","level":"error","module":"cmpp_client","msg":"connect failed","password":"12345","serviceId":"help","tenantId":"102019120480753","time":"2019-12-05T10:23:26+08:00"}
+
+cmpp: ErrorNo file
+  1. ConnRspStatusErrMap
+    status
+  2. DeliverRspResultErrMap
+    Result
+  -. FwdRspResultErrMap
+  4. SubmitRspResultErrMap
+    Result
+
+收到提交响应的时间 - 通道实际发送时间
+  -- 实际发送时间(doSend/submit) seq -> message
+  -- 收到响应的时间(SubmitResp) seq -> message (SubmitResp)  taskid->SubmitTime
+  -- 查找已发送的message(ReportReq) time.Now().Sub(SubmitTime[taskid])
+遇到的问题:
+  seq 服务重启之后, 将重新开始计数, 导致seq对应的响应massage不准确
+解决的办法:
+  原有服务是如何进行处理的: 定时和监听到退出时, 根据seq存储至redis, 服务重启之后, seq重新计数,
+  只会存储至内存中, 与原先相同的seq redis不会进行更新
+
+1. 手动关闭时清空删除缓存至redis的key, 防止服务重启之后自动连接
+
+
+log.WithField("seq", seq).
+		WithField("subRsptime", subRsptime).
+		Info("spend time between submit and response")
+
+log.WithField("msgId", req.TaskId).
+		WithField("rspReptime", rspReptime).
+		Info("spend time between response and deliver reporter")

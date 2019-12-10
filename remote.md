@@ -16,6 +16,9 @@
     nohup.out
     stdout
 
+  ps -ef|grep cmpp_service
+  pkill cmpp_service
+
 ## docker-compose
 
   docker build . -t api_service:latest
