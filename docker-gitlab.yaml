@@ -9,6 +9,6 @@ services:
       - 22:22
       - 443:443
     volumes:
-      - $GITLAB_HOME/conf:/etc/gitlab
-      - $GITLAB_HOME:/var/opt/gitlab
-      - $GITLAB_HOME/log:/var/log/gitlab
+      - ${GITLAB_HOME}/conf:/etc/gitlab
+      - ${GITLAB_HOME}:/var/opt/gitlab
+      - ${GITLAB_HOME}/log:/var/log/gitlab
