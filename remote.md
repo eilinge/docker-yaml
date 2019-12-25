@@ -9,6 +9,8 @@
 ## sioo
 
   ssh root@192.168.1.198
+
+  ssh root@192.168.1.178
   sioo!1234
 
   /data/go/cmpp
@@ -18,6 +20,9 @@
 
   ps -ef|grep cmpp_service
   pkill cmpp_service
+
+  ps -ef|grep channel_deliver
+  pkill channel_deliver
 
 ## docker-compose
 
